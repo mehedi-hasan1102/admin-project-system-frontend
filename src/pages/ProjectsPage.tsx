@@ -8,7 +8,7 @@ import {
   deleteProject,
   clearError,
 } from '../store/slices/projectsSlice';
-import { Alert, Button, LoadingSpinner } from '../components/common';
+import { Alert, LoadingSpinner } from '../components/common';
 import { FiPlus, FiFolder, FiArrowRight, FiEdit2, FiTrash2, FiAward } from 'react-icons/fi';
 
 export const ProjectsPage: React.FC = () => {
