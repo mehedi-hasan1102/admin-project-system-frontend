@@ -9,6 +9,7 @@ import {
   clearError,
 } from '../store/slices/projectsSlice';
 import { Alert, Button, LoadingSpinner } from '../components/common';
+import { FiPlus, FiFolder, FiArrowRight, FiEdit2, FiTrash2, FiAward } from 'react-icons/fi';
 
 export const ProjectsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -57,137 +58,161 @@ export const ProjectsPage: React.FC = () => {
 
   return (
     <Layout>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Projects</h1>
-        <Button
-          onClick={() => setShowCreateForm(!showCreateForm)}
-          className="gap-2"
-        >
-          {showCreateForm ? '✕ Cancel' : '+ Create Project'}
-        </Button>
-      </div>
-
-      {error && (
-        <Alert
-          message={error}
-          type="error"
-          onClose={() => dispatch(clearError())}
-        />
-      )}
-      {formError && (
-        <Alert
-          message={formError}
-          type="error"
-          onClose={() => setFormError('')}
-        />
-      )}
-
-      {showCreateForm && (
-        <div className="bg-white shadow rounded-lg p-6 mb-6">
-          <h2 className="text-xl font-bold mb-4">Create New Project</h2>
-          <form onSubmit={handleCreateProject} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Project Name *
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter project name"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Description
-              </label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter project description"
-                rows={3}
-              />
-            </div>
-            <div className="flex gap-2">
-              <Button type="submit" isLoading={isLoading}>
-                Create Project
-              </Button>
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() => setShowCreateForm(false)}
-              >
-                Cancel
-              </Button>
-            </div>
-          </form>
+      <div className="mb-12">
+        <div className="flex justify-between items-start mb-8">
+          <div>
+            <h1 className="text-4xl font-bold text-slate-900 mb-2">Projects</h1>
+            <p className="text-lg text-slate-600">Manage and collaborate on your projects</p>
+          </div>
+          <button
+            onClick={() => setShowCreateForm(!showCreateForm)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+              showCreateForm
+                ? 'bg-slate-200 text-slate-900 hover:bg-slate-300'
+                : 'bg-slate-900 text-white hover:bg-slate-800'
+            }`}
+          >
+            <FiPlus className="w-4 h-4" />
+            {showCreateForm ? 'Cancel' : 'Create Project'}
+          </button>
         </div>
-      )}
 
-      {isLoading && !projects.length ? (
-        <div className="flex justify-center py-12">
-          <LoadingSpinner size="large" />
-        </div>
-      ) : projects.length === 0 ? (
-        <div className="bg-white shadow rounded-lg p-12 text-center">
-          <p className="text-gray-600 text-lg">No projects yet.</p>
-          <p className="text-gray-500">Create a new project to get started!</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((project) => (
-            <div
-              key={project.id}
-              className="bg-white shadow rounded-lg p-6 hover:shadow-lg transition"
-            >
-              <h3 className="text-lg font-bold text-gray-900 mb-2">
-                {project.name}
-              </h3>
-              {project.description && (
-                <p className="text-gray-600 text-sm mb-3">
-                  {project.description}
-                </p>
-              )}
-              <div className="flex justify-between items-center mb-4">
-                <span className="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-semibold">
-                  {project.status}
-                </span>
+        {error && (
+          <Alert
+            message={error}
+            type="error"
+            onClose={() => dispatch(clearError())}
+          />
+        )}
+        {formError && (
+          <Alert
+            message={formError}
+            type="error"
+            onClose={() => setFormError('')}
+          />
+        )}
+
+        {showCreateForm && (
+          <div className="bg-white border border-slate-200 rounded-xl p-8 mb-8">
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">Create New Project</h2>
+            <form onSubmit={handleCreateProject} className="space-y-6 max-w-2xl">
+              <div>
+                <label className="block text-sm font-semibold text-slate-900 mb-2">
+                  Project Name
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent transition-colors"
+                  placeholder="Enter project name"
+                />
               </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="secondary"
-                  onClick={() => navigate(`/projects/${project.id}`)}
-                  className="text-sm flex-1"
+              <div>
+                <label className="block text-sm font-semibold text-slate-900 mb-2">
+                  Description
+                </label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent transition-colors"
+                  placeholder="Enter project description"
+                  rows={4}
+                />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition-colors disabled:opacity-50"
                 >
-                  View
-                </Button>
-                {user?.role === 'ADMIN' && (
-                  <>
-                    <Button
-                      variant="secondary"
-                      onClick={() => navigate(`/projects/${project.id}/edit`)}
-                      className="text-sm flex-1"
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="danger"
-                      onClick={() => handleDeleteProject(project.id)}
-                      className="text-sm flex-1"
-                    >
-                      Delete
-                    </Button>
-                  </>
-                )}
+                  <FiPlus className="w-4 h-4" />
+                  Create Project
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowCreateForm(false)}
+                  className="px-4 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg font-medium transition-colors"
+                >
+                  Cancel
+                </button>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            </form>
+          </div>
+        )}
+
+        {isLoading && !projects.length ? (
+          <div className="flex justify-center py-12">
+            <LoadingSpinner size="large" />
+          </div>
+        ) : projects.length === 0 ? (
+          <div className="bg-white border border-slate-200 rounded-xl p-12 text-center">
+            <FiFolder className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+            <p className="text-slate-600 text-lg mb-2">No projects yet.</p>
+            <p className="text-slate-500">Create a new project to get started!</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {projects.map((project) => (
+              <div
+                key={project.id}
+                className="bg-white border border-slate-200 rounded-xl p-6 hover:border-slate-300 hover:shadow-md transition-all group"
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center justify-center w-12 h-12 bg-slate-100 rounded-lg group-hover:bg-slate-200 transition-colors">
+                    <FiFolder className="w-6 h-6 text-slate-600" />
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-xs font-semibold">
+                    <FiAward className="w-3 h-3" />
+                    {project.status}
+                  </span>
+                </div>
+                
+                <h3 className="text-lg font-bold text-slate-900 mb-2 line-clamp-2">
+                  {project.name}
+                </h3>
+                
+                {project.description && (
+                  <p className="text-slate-600 text-sm mb-4 line-clamp-2">
+                    {project.description}
+                  </p>
+                )}
+                
+                <div className="flex gap-2 pt-4 border-t border-slate-200">
+                  <button
+                    onClick={() => navigate(`/projects/${project.id}`)}
+                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg font-medium transition-colors text-sm"
+                    title="View project"
+                  >
+                    <FiArrowRight className="w-4 h-4" />
+                    View
+                  </button>
+                  {user?.role === 'ADMIN' && (
+                    <>
+                      <button
+                        onClick={() => navigate(`/projects/${project.id}/edit`)}
+                        className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+                        title="Edit project"
+                      >
+                        <FiEdit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteProject(project.id)}
+                        className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Delete project"
+                      >
+                        <FiTrash2 className="w-4 h-4" />
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </Layout>
   );
 };
