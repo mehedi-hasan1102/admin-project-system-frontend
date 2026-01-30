@@ -65,9 +65,9 @@ export const DashboardPage: React.FC = () => {
       {user?.role === 'ADMIN' && (
         <div className="mb-12">
           <h2 className="text-2xl font-bold text-slate-900 mb-6">Admin Features</h2>
-          <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 border border-amber-200 rounded-xl p-8">
+          <div className="bg-linear-to-br from-amber-50 via-orange-50 to-red-50 border border-amber-200 rounded-xl p-8">
             <div className="flex items-start gap-4 mb-6">
-              <div className="flex items-center justify-center w-12 h-12 bg-amber-100 rounded-lg flex-shrink-0">
+              <div className="flex items-center justify-center w-12 h-12 bg-amber-100 rounded-lg shrink-0">
                 <FiShield className="w-6 h-6 text-amber-700" />
               </div>
               <div>
@@ -127,9 +127,9 @@ export const DashboardPage: React.FC = () => {
       {user?.role !== 'ADMIN' && (
         <div className="mb-12">
           <h2 className="text-2xl font-bold text-slate-900 mb-6">Member Features</h2>
-          <div className="bg-gradient-to-br from-blue-50 via-cyan-50 to-slate-50 border border-blue-200 rounded-xl p-8">
+          <div className="bg-linear-to-br from-blue-50 via-cyan-50 to-slate-50 border border-blue-200 rounded-xl p-8">
             <div className="flex items-start gap-4 mb-6">
-              <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-lg flex-shrink-0">
+              <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-lg shrink-0">
                 <FiCheckCircle className="w-6 h-6 text-blue-700" />
               </div>
               <div>

@@ -26,7 +26,7 @@ export const Navigation: React.FC = () => {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center gap-12">
             <Link to="/dashboard" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 bg-gradient-to-br from-slate-900 to-slate-700 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-linear-to-br from-slate-900 to-slate-700 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">AS</span>
               </div>
               <span className="text-lg font-semibold text-slate-900 group-hover:text-slate-700 transition-colors">Admin System</span>
