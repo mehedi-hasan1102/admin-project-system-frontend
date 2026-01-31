@@ -9,12 +9,21 @@ const initialState: ProjectsState = {
   error: null,
 };
 
+// Helper function to transform MongoDB _id to id
+const transformProject = (project: any) => ({
+  ...project,
+  id: project._id || project.id,
+});
+
+const transformProjects = (projects: any[]) =>
+  projects.map(transformProject);
+
 export const fetchProjects = createAsyncThunk(
   'projects/fetchProjects',
   async (_, { rejectWithValue }) => {
     try {
       const response = await apiClient.getProjects();
-      return response.data.data;
+      return transformProjects(response.data.data);
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message || 'Failed to fetch projects'
@@ -28,7 +37,7 @@ export const fetchProjectById = createAsyncThunk(
   async (projectId: string, { rejectWithValue }) => {
     try {
       const response = await apiClient.getProjectById(projectId);
-      return response.data.data;
+      return transformProject(response.data.data);
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message || 'Failed to fetch project'
@@ -45,7 +54,7 @@ export const createProject = createAsyncThunk(
   ) => {
     try {
       const response = await apiClient.createProject(name, description);
-      return response.data.data;
+      return transformProject(response.data.data);
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message || 'Failed to create project'
@@ -62,7 +71,7 @@ export const updateProject = createAsyncThunk(
   ) => {
     try {
       const response = await apiClient.updateProject(projectId, data);
-      return response.data.data;
+      return transformProject(response.data.data);
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message || 'Failed to update project'

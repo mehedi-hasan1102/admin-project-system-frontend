@@ -6,6 +6,8 @@ import { LoginPage } from './pages/LoginPage';
 import { InviteRegistrationPage } from './pages/InviteRegistrationPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { ProjectsPage } from './pages/ProjectsPage';
+import { ProjectDetailPage } from './pages/ProjectDetailPage';
+import { EditProjectPage } from './pages/EditProjectPage';
 import { UsersPage } from './pages/UsersPage';
 
 function App() {
@@ -29,6 +31,22 @@ function App() {
               <ProtectedRoute>
                 <ProjectsPage />
               </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/projects/:projectId"
+            element={
+              <ProtectedRoute>
+                <ProjectDetailPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/projects/:projectId/edit"
+            element={
+              <AdminRoute>
+                <EditProjectPage />
+              </AdminRoute>
             }
           />
           <Route
