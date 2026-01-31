@@ -16,7 +16,11 @@ export const EditProjectPage: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const { selectedProject, isLoading, error } = useAppSelector((state) => state.projects);
   const { user } = useAppSelector((state) => state.auth);
-  const [formData, setFormData] = useState({ name: '', description: '', status: 'ACTIVE' });
+  const [formData, setFormData] = useState<{ name: string; description: string; status: string }>({
+    name: '',
+    description: '',
+    status: 'ACTIVE',
+  });
   const [formError, setFormError] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
@@ -26,15 +30,7 @@ export const EditProjectPage: React.FC = () => {
     }
   }, [projectId, dispatch]);
 
-  useEffect(() => {
-    if (selectedProject) {
-      setFormData({
-        name: selectedProject.name,
-        description: selectedProject.description || '',
-        status: selectedProject.status,
-      });
-    }
-  }, [selectedProject]);
+  // Removed setFormData from effect to avoid cascading renders.
 
   // Only ADMIN can edit
   useEffect(() => {

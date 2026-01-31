@@ -18,9 +18,30 @@ export const ProjectDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { projectId } = useParams<{ projectId: string }>();
+  type User = {
+    id: string;
+    name: string;
+    // add other user fields if needed
+  };
+
+  type Project = {
+    id: string;
+    name: string;
+    description?: string;
+    status: string;
+    createdBy: string | User;
+    createdAt: string;
+    teamMembers?: { userId: string | User; role: string }[];
+    // add other project fields if needed
+  };
+
   const { selectedProject, isLoading, error } = useAppSelector(
     (state) => state.projects
-  );
+  ) as {
+    selectedProject: Project | null;
+    isLoading: boolean;
+    error: string | null;
+  };
   const { user } = useAppSelector((state) => state.auth);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
@@ -75,7 +96,7 @@ export const ProjectDetailPage: React.FC = () => {
   if (!selectedProject) {
     return (
       <Layout>
-        <div className="max-w-4xl mx-auto min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 -mx-4 -my-4 px-4 py-8 md:px-8 md:py-12">
+        <div className="max-w-4xl mx-auto min-h-screen  px-4 py-8 md:px-8 md:py-12">
           <button
             onClick={() => navigate('/projects')}
             className="flex items-center gap-2 text-slate-600 hover:text-slate-900 font-semibold mb-6 transition-colors"
@@ -93,7 +114,7 @@ export const ProjectDetailPage: React.FC = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 -mx-4 -my-4 px-4 py-8 md:px-8 md:py-12">
+      <div className="min-h-screen  px-4 py-8 md:px-8 md:py-12">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="mb-8">

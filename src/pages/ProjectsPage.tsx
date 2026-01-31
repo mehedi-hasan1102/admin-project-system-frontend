@@ -9,7 +9,7 @@ import {
   clearError,
 } from '../store/slices/projectsSlice';
 import { Alert, LoadingSpinner } from '../components/common';
-import { FiPlus, FiFolder, FiArrowRight, FiEdit2, FiTrash2, FiClock, FiX } from 'react-icons/fi';
+import { FiPlus, FiFolder, FiArrowRight, FiEdit2, FiTrash2, FiClock } from 'react-icons/fi';
 
 export const ProjectsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -73,7 +73,7 @@ export const ProjectsPage: React.FC = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 -mx-4 -my-4 px-4 py-8 md:px-8 md:py-12">
+      <div className="min-h-screen  px-4 py-8 md:px-8 md:py-12">
         {/* Header Section */}
         <div className="max-w-7xl mx-auto mb-12">
           <div className="flex justify-between items-start">
