@@ -9,7 +9,9 @@ import {
   clearError,
 } from '../store/slices/projectsSlice';
 import { Alert, LoadingSpinner } from '../components/common';
-import { FiPlus, FiFolder, FiArrowRight, FiEdit2, FiTrash2, FiClock } from 'react-icons/fi';
+import { FiPlus, FiFolder, FiArrowRight, FiEdit2, FiTrash2, FiClock, FiSearch, FiFilter, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+
+const ITEMS_PER_PAGE = 6;
 
 export const ProjectsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -20,6 +22,11 @@ export const ProjectsPage: React.FC = () => {
   const [formData, setFormData] = useState({ name: '', description: '' });
   const [formError, setFormError] = useState('');
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  
+  // Search & Filter State
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('ALL');
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     dispatch(fetchProjects());
@@ -70,6 +77,22 @@ export const ProjectsPage: React.FC = () => {
       year: 'numeric'
     }).format(date);
   };
+
+  // Filter and search logic
+  const filteredProjects = projects.filter((project) => {
+    const matchesSearch = 
+      project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (project.description && project.description.toLowerCase().includes(searchTerm.toLowerCase()));
+    
+    const matchesStatus = statusFilter === 'ALL' || project.status === statusFilter;
+    
+    return matchesSearch && matchesStatus;
+  });
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredProjects.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedProjects = filteredProjects.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   return (
     <Layout>
@@ -175,6 +198,69 @@ export const ProjectsPage: React.FC = () => {
           </div>
         )}
 
+        {/* Search & Filters Bar */}
+        {projects.length > 0 && (
+          <div className="max-w-7xl mx-auto mb-8">
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Search */}
+                <div className="relative">
+                  <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+                  <input
+                    type="text"
+                    placeholder="Search projects by name or description..."
+                    value={searchTerm}
+                    onChange={(e) => {
+                      setSearchTerm(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className="w-full pl-11 pr-4 py-2.5 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent transition-all"
+                  />
+                </div>
+
+                {/* Filter by Status */}
+                <div className="flex items-center gap-2">
+                  <FiFilter className="text-slate-400 w-5 h-5" />
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => {
+                      setStatusFilter(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className="flex-1 px-4 py-2.5 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent transition-all"
+                  >
+                    <option value="ALL">All Status</option>
+                    <option value="ACTIVE">Active</option>
+                    <option value="COMPLETED">Completed</option>
+                    <option value="ARCHIVED">Archived</option>
+                    <option value="ON_HOLD">On Hold</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Filter Results Info */}
+              {(searchTerm || statusFilter !== 'ALL') && (
+                <div className="mt-4 flex items-center justify-between text-sm">
+                  <p className="text-slate-600">
+                    Found <span className="font-semibold text-slate-900">{filteredProjects.length}</span> project{filteredProjects.length !== 1 ? 's' : ''} 
+                    {searchTerm && ` matching "${searchTerm}"`}
+                    {statusFilter !== 'ALL' && ` with status ${statusFilter}`}
+                  </p>
+                  <button
+                    onClick={() => {
+                      setSearchTerm('');
+                      setStatusFilter('ALL');
+                    }}
+                    className="text-slate-600 hover:text-slate-900 underline transition-colors"
+                  >
+                    Clear filters
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Projects Grid */}
         <div className="max-w-7xl mx-auto">
           {isLoading && !projects.length ? (
@@ -196,9 +282,27 @@ export const ProjectsPage: React.FC = () => {
                 Create Project
               </button>
             </div>
+          ) : filteredProjects.length === 0 ? (
+            <div className="bg-white border-2 border-dashed border-slate-300 rounded-2xl p-16 text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-100 rounded-xl mb-6">
+                <FiSearch className="w-8 h-8 text-slate-400" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">No matching projects</h3>
+              <p className="text-slate-600 mb-8">Try adjusting your search or filters</p>
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setStatusFilter('ALL');
+                }}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-lg font-semibold hover:bg-slate-800 transition-all"
+              >
+                Clear filters
+              </button>
+            </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {projects.map((project) => (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                {paginatedProjects.map((project) => (
                 <div
                   key={project.id}
                   className="group bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-slate-300 hover:shadow-lg transition-all duration-200 flex flex-col"
@@ -269,7 +373,58 @@ export const ProjectsPage: React.FC = () => {
                   </div>
                 </div>
               ))}
-            </div>
+              </div>
+
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="bg-white border border-slate-200 rounded-2xl p-6 flex items-center justify-between">
+                  <div className="text-sm text-slate-600">
+                    Showing <span className="font-semibold text-slate-900">{startIndex + 1}</span> to{' '}
+                    <span className="font-semibold text-slate-900">
+                      {Math.min(startIndex + ITEMS_PER_PAGE, filteredProjects.length)}
+                    </span>{' '}
+                    of <span className="font-semibold text-slate-900">{filteredProjects.length}</span> projects
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                      disabled={currentPage === 1}
+                      className="flex items-center gap-1 px-3 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <FiChevronLeft className="w-4 h-4" />
+                      Previous
+                    </button>
+
+                    {/* Page Numbers */}
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                        <button
+                          key={page}
+                          onClick={() => setCurrentPage(page)}
+                          className={`px-3 py-2 rounded-lg font-semibold transition-all ${
+                            currentPage === page
+                              ? 'bg-slate-900 text-white'
+                              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                      disabled={currentPage === totalPages}
+                      className="flex items-center gap-1 px-3 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Next
+                      <FiChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
 
